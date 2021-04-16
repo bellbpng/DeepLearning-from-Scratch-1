@@ -24,3 +24,22 @@ def cross_entropy_error(y,t):
         y = y.reshape(1, y.size)
     batch_size_entropy = y.shape[0] #y의 행의개수(데이터의 개수)
     return -np.sum(t*np.log(y+1e-7))/batch_size_entropy
+
+#정답레이블이 원-핫 인코딩이 아닌 경우 배치용 교차엔트로피
+def cross_entropy_error2(y,t):
+    if y.ndim == 1:
+        t = t.reshape(1, t.size)
+        y = y.reshape(1, y.size)
+    
+    batch_size_entropy = y.shape[0]
+    return -np.sum(np.log(y[np.arange(batch_size_entropy),t] + 1e-7)) / batch_size_entropy
+
+
+"""
+np.log(y[np.arange(batch_size_entropy), t])에 대한 설명
+- np.arange(batch_size)는 0부터 (batch_size_entropy-1) 까지 1간격으로 배열을 생성한다.
+- if batch_size_entropy == 5 then [0, 1, 2, 3, 4]
+- t 에는 [2,7,0,9,4]와 같이 레이블이 담겨있으므로, 
+- y[np.arange(batch_size_entropy), t]는 각 데이터의 정답 레이블에 해당하는 신경망의 출력을 추출한다.
+- 위의 예에서는 y[0,2], y[1,7], y[2,0], y[3,9], y[4,4]인 넘파이 배열이 형성된다.
+"""
