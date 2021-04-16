@@ -30,8 +30,8 @@ def numerical_gradient_2d(f, X):
         
         return grad
 
-
-def numerical_gradient(f, x):
+# 다차원 배열을 처리하기 위한 수치미분 함수
+def numerical_gradient(f, x): # f는 함수, x는 함수 f의 인수
     h = 1e-4 # 0.0001
     grad = np.zeros_like(x)
     
