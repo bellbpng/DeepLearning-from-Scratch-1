@@ -9,7 +9,7 @@ from dataset.mnist import load_mnist
     
 print(x_train.shape) #60000행, 784열의 훈련데이터
 print(t_train.shape) #60000행, 10열의 훈련 정답레이블
-#훈련 데이터와는 다르게 10줄짜리 데이터이므로, 훈련데이터에서 무작위로 10장을 추출한다.
+
 
 train_size = x_train.shape[0] #60000개의 데이터
 batch_size = 10
