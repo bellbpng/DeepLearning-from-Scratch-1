@@ -1,4 +1,7 @@
+import sys, os
+sys.path.append(os.pardir)
 import numpy as np
+from common.functions import softmax, cross_entropy_error
 
 class ReLu:
     def __init__(self):
@@ -51,3 +54,26 @@ class Affine:
         dx = np.dot(dout, self.W.T)
         dW = np.dot(self.x.T, dout)
         db = np.sum(dout, axis=0)
+
+        return dx
+
+
+class SoftmaxWithLoss:
+    def __init__(self):
+        self.loss = None
+        self.y = None
+        self.t = None
+
+    def forward(self, x, t):
+        self.y = softmax(x)
+        self.t = t
+        self.loss = cross_entropy_error(self.y, self.t)
+
+        return self.loss
+
+    def backward(self, dout=1):
+        batch_size = self.t.shape[0]
+        dx = (self.y-self.t)/batch_size # 배치크기로 나누어 데이터 1개당 오차를 앞계층에 전달
+
+        return dx
+
