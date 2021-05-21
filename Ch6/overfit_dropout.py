@@ -20,7 +20,7 @@ class Dropout:
             self.mask = np.random.rand(*x.shape) > self.dropout_ratio
             return x*self.mask
         else:
-            return x*(1.0-self.mask)
+            return x*(1.0-self.dropout_ratio)
 
     --- 역전파는 ReLU와 같은 동작을 한다. 순전파때 신호를 통과시킨 뉴런은 역전파때도 그대로 통과시키고,
         그렇지 않은 뉴런은 역전파때 신호를 차단한다. ---
