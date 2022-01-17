@@ -68,3 +68,4 @@ y_batch = predict(network,x_batch)
 
 print(cross_entropy_error(y_batch, t_batch))
 
+
