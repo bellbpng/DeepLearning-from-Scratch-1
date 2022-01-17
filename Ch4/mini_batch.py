@@ -17,29 +17,28 @@ batch_mask = np.random.choice(train_size, batch_size) #(60000,10) 0이상 60000�
 x_batch = x_train[batch_mask]
 t_batch = t_train[batch_mask]
 
-#배치용 교차엔트로피 구현
-def cross_entropy_error(y,t):
-    if y.ndim==1 : # y가 1줄짜리 데이터라면(행의 개수가 1)
-        t = t.reshape(1, t.size) #size는 전체 원소의 개수를 반환한다.
-        y = y.reshape(1, y.size)
-    batch_size_entropy = y.shape[0] #y의 행의개수(데이터의 개수)
-    return -np.sum(t*np.log(y+1e-7))/batch_size_entropy
-
-#정답레이블이 원-핫 인코딩이 아닌 경우 배치용 교차엔트로피
-def cross_entropy_error2(y,t):
+# #배치용 교차엔트로피 구현
+def cross_entropy_error(y, t):
+    delta = 1e-7
     if y.ndim == 1:
         t = t.reshape(1, t.size)
         y = y.reshape(1, y.size)
-    
-    batch_size_entropy = y.shape[0]
-    return -np.sum(np.log(y[np.arange(batch_size_entropy),t] + 1e-7)) / batch_size_entropy
-
+        
+    # 훈련 데이터가 원-핫 벡터라면 정답 레이블의 인덱스로 반환
+    if t.size == y.size:
+        t = t.argmax(axis=1) 
+             
+    batch_size = y.shape[0]
+    return -np.sum(np.log(y[np.arange(batch_size), t] + delta)) / batch_size
 
 """
-np.log(y[np.arange(batch_size_entropy), t])에 대한 설명
-- np.arange(batch_size)는 0부터 (batch_size_entropy-1) 까지 1간격으로 배열을 생성한다.
-- if batch_size_entropy == 5 then [0, 1, 2, 3, 4]
-- t 에는 [2,7,0,9,4]와 같이 레이블이 담겨있으므로, 
-- y[np.arange(batch_size_entropy), t]는 각 데이터의 정답 레이블에 해당하는 신경망의 출력을 추출한다.
-- 위의 예에서는 y[0,2], y[1,7], y[2,0], y[3,9], y[4,4]인 넘파이 배열이 형성된다.
+t.size == y.size 가 원-핫 인코딩임을 확인할 수 있는 이유
+- t는 정답레이블을 배열로 가지는데 원-핫 인코딩이 되어있지 않은 경우 말 그대로 '정답'만 원소로 가진다.
+따라서, t = [2 3 5 6 1 9 7 3 2 1] 와 같이 1차원배열의 양상을 띄게 되므로 batch_size가 10인 경우
+t.size = 10 이다.
+- 만약 원-핫 인코딩이 되어있다면 t는 정답레이블의 인덱스만 1이고 나머지는 0인 배열을 원소로 가진다.
+따라서, t = [[0 1 0 0 0 0 0 0 0 0], [0 0 1 0 0 0 0 0 0 0], ... ,[0 1 1 0 0 0 0 0 0 0]] 와 같은 형태로
+t.size = 10x10 = 100 = y.size 이다.
+- y[np.arange(batch_siz), t] 는 t가 원-핫 인코딩이 되어있다면 t = t.argmax(axis=1)에서 1을 원소로하는 
+인덱스만을 가지는 1차원 배열이 만들어지므로 결과는 y[0, 2], y[1, 3], y[2, 5] ... 를 원소로 가지는 배열이 형성된다.
 """
