@@ -8,11 +8,11 @@ from simple_convnet import SimpleConvNet
 from common.trainer import Trainer
 
 # 데이터 읽기
-(x_train, t_train), (x_test, t_test) = load_mnist(flatten=False)
+#(x_train, t_train), (x_test, t_test) = load_mnist(flatten=False)
 
 # 시간이 오래 걸릴 경우 데이터를 줄인다.
-#x_train, t_train = x_train[:5000], t_train[:5000]
-#x_test, t_test = x_test[:1000], t_test[:1000]
+x_train, t_train = x_train[:5000], t_train[:5000]
+x_test, t_test = x_test[:1000], t_test[:1000]
 
 max_epochs = 20
 
